@@ -5,6 +5,36 @@ const canvas = document.querySelector('canvas');
 
 const contexto = canvas.getContext('2d');
 
+const chao = {
+
+    spriteX: 0,
+    spriteY: 610,
+    largura: 224,
+    altura: 112,
+    x: 0,
+    y: canvas.height - 112,
+
+    desenha() {
+        contexto.drawImage(
+            sprites, // image,
+            chao.spriteX, chao.spriteY, // sprite x, sprite y,
+            chao.largura, chao.altura, // tamanho da sprite sWidth, sHeight,
+            chao.x, chao.y, // posicao dentro do canvas
+            chao.largura, chao.altura // tamanho dentro do canvas dWidth, dHeight 
+        );
+        contexto.drawImage(
+            sprites, // image,
+            chao.spriteX, chao.spriteY, // sprite x, sprite y,
+            chao.largura, chao.altura, // tamanho da sprite sWidth, sHeight,
+            chao.x + chao.largura, chao.y, // posicao dentro do canvas
+            chao.largura, chao.altura // tamanho dentro do canvas dWidth, dHeight 
+        );
+    }
+
+}
+
+
+
 const flappyBird = {
     spriteX: 0,
     spriteY: 0,
@@ -21,7 +51,7 @@ const flappyBird = {
             flappyBird.x, flappyBird.y, // posicao dentro do canvas
             flappyBird.largura, flappyBird.altura // tamanho dentro do canvas dWidth, dHeight 
         );
-        requestAnimationFrame(loop);
+
     }
 }
 
@@ -29,6 +59,8 @@ const flappyBird = {
 function loop() {
 
     flappyBird.desenha();
+    chao.desenha();
+    requestAnimationFrame(loop);
 }
 
 loop();
