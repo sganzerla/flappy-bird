@@ -128,6 +128,9 @@ const Telas = {
         },
         atualiza() {
 
+        },
+        click() {
+            mudaParaTela(Telas.JOGO);
         }
     },
 
@@ -139,6 +142,9 @@ const Telas = {
         },
         atualiza() {
             flappyBird.atualiza();
+        },
+        click() {
+
         }
 
     }
@@ -153,6 +159,12 @@ function loop() {
     telaAtiva.atualiza();
     requestAnimationFrame(loop);
 }
+
+window.addEventListener('click', function () {
+    if (telaAtiva.click) {
+        telaAtiva.click();
+    }
+});
 
 mudaParaTela(Telas.INICIO);
 
