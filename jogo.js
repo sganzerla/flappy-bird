@@ -130,8 +130,7 @@ function criaFlappyBird() {
             if (fazColisao(flappyBird, globais.chao)) {
                 somHit.play();
 
-                setTimeout(() => {
-                }, 500);
+                setTimeout(() => { }, 500);
                 mudaParaTela(Telas.INICIO);
 
             }
@@ -230,7 +229,7 @@ function criaCanos() {
                     canoCeuX, canoCeuY,
                     canos.largura, canos.altura
                 );
-
+                //cano do chao
                 const canoChaoX = par.x;
                 const canoChaoY = canos.altura + espacamentoEntreCanos + yRandom;
 
@@ -241,7 +240,34 @@ function criaCanos() {
                     canoChaoX, canoChaoY,
                     canos.largura, canos.altura
                 );
+
+                par.canoCeu = {
+                    x: canoCeuX,
+                    y: canos.altura + canoCeuY,
+                };
+
+                par.canoChao = {
+                    x: canoChaoX,
+                    y: canos.altura + canoChaoY,
+                };
             });
+        },
+        temColisaoComOFlappyBird(par) {
+
+            const cabecaDoFlappy = globais.flappyBird.y;
+
+            const peDoFlappy = globais.flappyBird.y + globais.flappyBird.altura;
+
+            if (globais.flappyBird.x >= par.x) {
+
+                if (cabecaDoFlappy <= par.canoCeu.y)
+                    return true;
+
+                if (peDoFlappy >= par.canoChao.y)
+                    return true;
+            }
+            return false;
+
         },
         pares: [],
         atualiza() {
@@ -255,6 +281,13 @@ function criaCanos() {
 
             canos.pares.forEach(function (par) {
                 par.x = par.x - 2;
+
+                if (canos.temColisaoComOFlappyBird(par)) {
+                    somHit.play();
+                    setTimeout(() => { }, 500);
+                    mudaParaTela(Telas.INICIO);
+
+                }
 
                 if (par.x + canos.largura <= 0) {
                     canos.pares.shift();
@@ -277,23 +310,23 @@ const Telas = {
         },
         desenha() {
             planoDeFundo.desenha();
-            globais.chao.desenha();
             globais.flappyBird.desenha();
             globais.canos.desenha();
-            //  mensagemGetReady.desenha();
+            globais.chao.desenha();
+            mensagemGetReady.desenha();
         },
         click() {
             mudaParaTela(Telas.JOGO);
         },
         atualiza() {
             globais.chao.atualiza();
-            globais.canos.atualiza();
         }
     },
 
     JOGO: {
         desenha() {
             planoDeFundo.desenha();
+            globais.canos.desenha();
             globais.chao.desenha();
             globais.flappyBird.desenha();
         },
@@ -301,6 +334,8 @@ const Telas = {
             globais.flappyBird.pula();
         },
         atualiza() {
+            globais.canos.atualiza();
+            globais.chao.atualiza();
             globais.flappyBird.atualiza();
         },
 
