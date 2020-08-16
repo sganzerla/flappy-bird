@@ -58,32 +58,48 @@ const planoDeFundo = {
     }
 
 }
+function criaChao() {
 
-const chao = {
+    const chao = {
 
-    spriteX: 0,
-    spriteY: 610,
-    largura: 224,
-    altura: 112,
-    x: 0,
-    y: canvas.height - 112,
+        spriteX: 0,
+        spriteY: 610,
+        largura: 224,
+        altura: 112,
+        x: 0,
+        y: canvas.height - 112,
 
-    desenha() {
-        contexto.drawImage(
-            sprites, // image,
-            chao.spriteX, chao.spriteY, // sprite x, sprite y,
-            chao.largura, chao.altura, // tamanho da sprite sWidth, sHeight,
-            chao.x, chao.y, // posicao dentro do canvas
-            chao.largura, chao.altura // tamanho dentro do canvas dWidth, dHeight 
-        );
-        contexto.drawImage(
-            sprites, // image,
-            chao.spriteX, chao.spriteY, // sprite x, sprite y,
-            chao.largura, chao.altura, // tamanho da sprite sWidth, sHeight,
-            (chao.x + chao.largura), chao.y, // posicao dentro do canvas
-            chao.largura, chao.altura // tamanho dentro do canvas dWidth, dHeight 
-        );
+        atualiza() {
+            const movimentoDoChao = 1;
+
+            const repeteEm = chao.largura / 2;
+
+            const movimentacao = chao.x - movimentoDoChao;
+
+            chao.x = movimentacao % repeteEm;
+
+            console.log('[chao.x', chao.x);
+            console.log('repeteEm', repeteEm);
+            console.log("movimentacao", movimentacao % repeteEm);
+        },
+        desenha() {
+            contexto.drawImage(
+                sprites, // image,
+                chao.spriteX, chao.spriteY, // sprite x, sprite y,
+                chao.largura, chao.altura, // tamanho da sprite sWidth, sHeight,
+                chao.x, chao.y, // posicao dentro do canvas
+                chao.largura, chao.altura // tamanho dentro do canvas dWidth, dHeight 
+            );
+            contexto.drawImage(
+                sprites, // image,
+                chao.spriteX, chao.spriteY, // sprite x, sprite y,
+                chao.largura, chao.altura, // tamanho da sprite sWidth, sHeight,
+                (chao.x + chao.largura), chao.y, // posicao dentro do canvas
+                chao.largura, chao.altura // tamanho dentro do canvas dWidth, dHeight 
+            );
+        }
     }
+    return chao;
 }
 
 function fazColisao(flappyBird, chao) {
@@ -113,7 +129,7 @@ function criaFlappyBird() {
         },
         atualiza() {
 
-            if (fazColisao(flappyBird, chao)) {
+            if (fazColisao(flappyBird, globais.chao)) {
                 somHit.play();
 
                 setTimeout(() => {
@@ -156,10 +172,11 @@ const Telas = {
     INICIO: {
         inicializa() {
             globais.flappyBird = criaFlappyBird();
+            globais.chao = criaChao();
         },
         desenha() {
             planoDeFundo.desenha();
-            chao.desenha();
+            globais.chao.desenha();
             globais.flappyBird.desenha();
             mensagemGetReady.desenha();
         },
@@ -167,14 +184,14 @@ const Telas = {
             mudaParaTela(Telas.JOGO);
         },
         atualiza() {
-
+            globais.chao.atualiza();
         }
     },
 
     JOGO: {
         desenha() {
             planoDeFundo.desenha();
-            chao.desenha();
+            globais.chao.desenha();
             globais.flappyBird.desenha();
         },
         click() {
