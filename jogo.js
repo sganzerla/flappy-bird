@@ -1,3 +1,5 @@
+let frames = 0;
+
 const somHit = new Audio();
 somHit.src = './resources/sons/hit.wav';
 
@@ -77,10 +79,6 @@ function criaChao() {
             const movimentacao = chao.x - movimentoDoChao;
 
             chao.x = movimentacao % repeteEm;
-
-            console.log('[chao.x', chao.x);
-            console.log('repeteEm', repeteEm);
-            console.log("movimentacao", movimentacao % repeteEm);
         },
         desenha() {
             contexto.drawImage(
@@ -142,10 +140,45 @@ function criaFlappyBird() {
             flappyBird.y = flappyBird.y + flappyBird.velocidade;
         },
 
+        movimentos: [
+            {
+                spriteX: 0,
+                spriteY: 0,
+            },
+            {
+                spriteX: 0,
+                spriteY: 26,
+            },
+            {
+                spriteX: 0,
+                spriteY: 52,
+            },
+            {
+                spriteX: 0,
+                spriteY: 26,
+            },
+
+        ],
+        frameAtual: 0,
+        atualizaOFrameAtual() {
+            const intervaloDeFrames = 10;
+            const passouOIntervalo = frames % intervaloDeFrames === 0;
+            if (passouOIntervalo) {
+
+                const baseDoIncremento = 1;
+                const incremento = baseDoIncremento + flappyBird.frameAtual;
+                const baseRepeticao = flappyBird.movimentos.length;
+
+                flappyBird.frameAtual = incremento % baseRepeticao;
+            }
+        },
         desenha() {
+            flappyBird.atualizaOFrameAtual();
+            const { spriteX, spriteY } = flappyBird.movimentos[flappyBird.frameAtual];
+
             contexto.drawImage(
                 sprites, // image,
-                flappyBird.spriteX, flappyBird.spriteY, // sprite x, sprite y,
+                spriteX, spriteY, // sprite x, sprite y,
                 flappyBird.largura, flappyBird.altura, // tamanho da sprite sWidth, sHeight,
                 flappyBird.x, flappyBird.y, // posicao dentro do canvas
                 flappyBird.largura, flappyBird.altura // tamanho dentro do canvas dWidth, dHeight 
@@ -211,6 +244,7 @@ const Telas = {
 function loop() {
     telaAtiva.desenha();
     telaAtiva.atualiza();
+    frames = frames + 1;
     requestAnimationFrame(loop);
 }
 
